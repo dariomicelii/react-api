@@ -1,28 +1,23 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 function App() {
-  // const [addArcticles, setAddArcticle] = useState("Titolo articolo");
-  // const [arcticles, setArcticles] = useState([
-  //   "Tagli all'edilizia",
-  //   "Omicidio su Marte",
-  //   "Concerto Stranamore a Pisa",
-  // ]);
-
-  // const handleInputChange = (event) => {
-  //   setAddArcticle(event.target.value);
-  // };
-
-  // const handleFormSubmit = (event) => {
-  //   event.preventDefault();
-  //   console.log("Aggiungi l'articolo: " + addArcticles);
-  //   const newArcticles = [...arcticles, addArcticles];
-  //   setArcticles(newArcticles);
-  // };
-  const [titleField, setTitleField] = useState("");
   const [articleList, setArticleList] = useState([]);
+
+  const fetchArticles = () => {
+    fetch("https://localhost:3000/posts")
+      .then((res) => res.json())
+      .then((data) => {
+        setArticleList(data);
+      });
+  };
+
+  useEffect(() => {
+    fetchArticles();
+  }, []);
 
   // CREO OGGETTO PER GESTIRE I CAMPI MULTIPLI
   const [formData, setFormData] = useState({
+    title: "",
     image: "https://static.spin.com/files/2020/12/SC13-1608419365.jpg",
     content: "",
     category: "",
@@ -39,19 +34,21 @@ function App() {
   const handleInsertArticleSubmit = (e) => {
     e.preventDefault();
 
-    if (!titleField) return;
+    if (!formData) return;
 
     const newArticle = {
-      title: titleField,
+      title: "",
+      image: "https://static.spin.com/files/2020/12/SC13-1608419365.jpg",
+      content: "",
+      category: "",
     };
 
     setArticleList([...articleList, newArticle]);
-    setTitleField("");
   };
 
-  const handleTitleChange = (e) => {
-    setTitleField(e.target.value);
-  };
+  // const handleTitleChange = (e) => {
+  //   setTitleField(e.target.value);
+  // };
 
   const deleteArticle = (deleteIndex) => {
     const newArticleList = articleList.filter(
@@ -74,14 +71,15 @@ function App() {
                   Titolo
                 </label>
                 <input
-                  value={titleField}
-                  onChange={handleTitleChange}
+                  value={formData.title}
+                  name="title"
+                  onChange={handleFormData}
                   type="text"
                   className="form-control mb-3"
                   id="article-title"
                 />
 
-                <label className="form-label" htmlFor="article-title">
+                <label className="form-label" htmlFor="article-image">
                   Immagine
                 </label>
                 <input
@@ -93,7 +91,7 @@ function App() {
                   id="article-image"
                 />
 
-                <label className="form-label" htmlFor="article-title">
+                <label className="form-label" htmlFor="article-content">
                   Contenuto
                 </label>
                 <input
@@ -138,7 +136,7 @@ function App() {
                       className="btn-close"
                     ></button>
                     <div className="card-body">
-                      <h3>{article.title}</h3>
+                      <h3>{formData.title}</h3>
                       <img className="img-fluid" src={formData.image} alt="" />
                       <p>{formData.content}</p>
                       <hr />
@@ -155,24 +153,6 @@ function App() {
           </div>
         </section>
       </div>
-
-      {/* <div className="container">
-        <h1>Form</h1>
-        <form onSubmit={handleFormSubmit}>
-          <input
-            type="text"
-            value={addArcticles}
-            onChange={handleInputChange}
-          />
-          <button>Invia</button>
-        </form>
-        <hr />
-        <ul>
-          {arcticles.map((arcticle) => (
-            <li key={arcticle}>{arcticle}</li>
-          ))}
-        </ul>
-      </div> */}
     </>
   );
 }
