@@ -1,146 +1,85 @@
 import { useState, useEffect } from "react";
 
 function App() {
-  const [articleList, setArticleList] = useState([]);
+  const [posts, setPosts] = useState([]);
 
-  const fetchArticles = () => {
-    fetch("https://localhost:3000/posts")
+  const fetchPosts = () => {
+    fetch("http://localhost:3000/posts")
       .then((res) => res.json())
       .then((data) => {
-        setArticleList(data);
+        setPosts(data);
       });
   };
 
   useEffect(() => {
-    fetchArticles();
+    fetchPosts();
   }, []);
 
   // CREO OGGETTO PER GESTIRE I CAMPI MULTIPLI
-  const [formData, setFormData] = useState({
-    title: "",
-    image: "https://static.spin.com/files/2020/12/SC13-1608419365.jpg",
-    content: "",
-    category: "",
-  });
+  // const [formData, setFormData] = useState({
+  //   title: posts.title,
+  //   image: posts.image,
+  //   content: posts.content,
+  //   category: posts.category,
+  // });
 
   // CREO UNA FUNZIONE UNICA PER GESTIRE L'EVENTO ONCHANGE DEI CAMPI
-  function handleFormData(e) {
-    setFormData((formData) => ({
-      ...formData,
-      [e.target.name]: e.target.value,
-    }));
-  }
+  // function handleFormData(e) {
+  //   setFormData((formData) => ({
+  //     ...formData,
+  //     [e.target.name]: e.target.value,
+  //   }));
+  // }
 
-  const handleInsertArticleSubmit = (e) => {
-    e.preventDefault();
+  // const handleInsertArticleSubmit = (e) => {
+  //   e.preventDefault();
 
-    if (!formData) return;
+  //   if (!formData) return;
 
-    const newArticle = {
-      title: "",
-      image: "https://static.spin.com/files/2020/12/SC13-1608419365.jpg",
-      content: "",
-      category: "",
-    };
+  //   const newArticle = {
+  //     title: "",
+  //     image: "https://static.spin.com/files/2020/12/SC13-1608419365.jpg",
+  //     content: "",
+  //     category: "",
+  //   };
 
-    setArticleList([...articleList, newArticle]);
-  };
+  //   setArticleList([...posts, newArticle]);
+  // };
 
   // const handleTitleChange = (e) => {
   //   setTitleField(e.target.value);
   // };
 
-  const deleteArticle = (deleteIndex) => {
-    const newArticleList = articleList.filter(
-      (article, articleIndex) => articleIndex !== deleteIndex
-    );
+  const deletePost = (deleteId) => {
+    const newPostList = posts.filter((post, id) => id !== deleteId);
 
-    setArticleList(newArticleList);
+    setPosts(newPostList);
   };
 
   return (
     <>
       <div className="container">
         {/* INSERT ARTICLE POST SECTION */}
-        <section className="py-4">
-          <form onSubmit={handleInsertArticleSubmit}>
-            <h2>Insert Form</h2>
-            <div className="row">
-              <div className="col-3">
-                <label className="form-label" htmlFor="article-title">
-                  Titolo
-                </label>
-                <input
-                  value={formData.title}
-                  name="title"
-                  onChange={handleFormData}
-                  type="text"
-                  className="form-control mb-3"
-                  id="article-title"
-                />
-
-                <label className="form-label" htmlFor="article-image">
-                  Immagine
-                </label>
-                <input
-                  value={formData.image}
-                  name="image"
-                  onChange={handleFormData}
-                  type="image"
-                  className="form-control mb-3"
-                  id="article-image"
-                />
-
-                <label className="form-label" htmlFor="article-content">
-                  Contenuto
-                </label>
-                <input
-                  value={formData.content}
-                  name="content"
-                  onChange={handleFormData}
-                  type="text"
-                  className="form-control mb-3"
-                  id="article-content"
-                />
-
-                <label className="form-label" htmlFor="article-title">
-                  Categoria
-                </label>
-                <input
-                  value={formData.category}
-                  name="category"
-                  onChange={handleFormData}
-                  type="text"
-                  className="form-control mb-3"
-                  id="article-content"
-                />
-              </div>
-              <div className="col-12">
-                <button className="btn btn-primary">Crea articolo</button>
-              </div>
-            </div>
-          </form>
-        </section>
-        <hr />
+        <h1>Rolling Stones Magazine</h1>
         {/* LIST ARTICLE SECTION */}
         <section className="py-4">
           <h2>Post list</h2>
           <div className="row row-cols-3 g-3">
-            {articleList.length ? (
-              articleList.map((article, index) => (
-                <div key={index} className="col">
+            {posts.length ? (
+              posts.map((post, id) => (
+                <div key={id} className="col">
                   <div className="card">
                     <button
-                      onClick={() => deleteArticle(index)}
+                      onClick={() => deletePost(id)}
                       type="button"
                       className="btn-close"
                     ></button>
                     <div className="card-body">
-                      <h3>{formData.title}</h3>
-                      <img className="img-fluid" src={formData.image} alt="" />
-                      <p>{formData.content}</p>
+                      <h3>{post.title}</h3>
+                      <img className="img-fluid" src={post.image} alt="" />
+                      <p>{post.content}</p>
                       <hr />
-                      <p>{formData.category}</p>
+                      <p>{post.category}</p>
                     </div>
                   </div>
                 </div>
